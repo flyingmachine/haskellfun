@@ -66,7 +66,6 @@ bmiTell'' weight height
         (skinny, normal, fat) = (18.5, 25.0, 30.0)
 
 -- You can also define functions in where blocks
-
 calcBmis :: [(Double, Double)] -> [Double]
 calcBmis xs = [bmi w h | (w, h) <- xs]
   where bmi weight height  = weight / height ^ 2
@@ -134,3 +133,36 @@ quicksort (x:xs) =
   let smallerOrEqual = [a | a <- xs, a <= x]
       larger = [a | a <- xs, a > x]
   in quicksort smallerOrEqual ++ [x] ++ quicksort larger
+  
+-- # 5 Higher-order functions
+
+-- Sections: apply infix functions partially
+
+divideByTen :: (Floating a) => a -> a
+divideByTen = (/10)
+
+isUpperAlphanum :: Char -> Bool
+isUpperAlphanum = (`elem` ['A'..'Z'])
+
+-- Parentheses are necessary here because first argument is a function
+-- and functions are naturally right-associative
+applyTwice :: (a -> a) -> a -> a
+applyTwice f x = f (f x)
+
+-- implementing zipWith
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ [] _ = []
+zipWith' _ _ [] = []
+zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
+
+-- implementing flip
+flip' :: (a -> b -> c) -> (b -> a -> c)
+flip' f = g
+  where g x y = f y x
+
+flip'' :: (a -> b -> c) -> (b -> a -> c)
+flip'' f y x = f x y
+
+-- sum of all odd squares less than 10k
+soaos = sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+soaos' = sum (takeWhile (<10000) [m | m <- [n^2 | n <- [1..]], odd m])
